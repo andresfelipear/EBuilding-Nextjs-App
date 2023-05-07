@@ -1,0 +1,17 @@
+@import "https://pro.fontawesome.com/releases/v5.10.0/css/all.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.images {
+    width: 350px;
+    height: 350px;
+    transition: width 1s, filter 1s;
+    border-radius: 10px;
+}
+
+.images:hover {
+    cursor: pointer;
+    filter: saturate(2);
+    width: 360px;
+}
