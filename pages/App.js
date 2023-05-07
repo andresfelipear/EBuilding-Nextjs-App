@@ -1,21 +1,16 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRouter } from 'next/router';
 import HomePage from './HomePage';
-import Header from '@/components/header/Header';
-import Footer from '@/components/footer/Footer';
+import Layout from '@/components/Layout';
 
-function App() {
+function App({ Component, pageProps }) {
   const queryClient = new QueryClient();
   const router = useRouter();
   return (
     <QueryClientProvider client={queryClient}>
-      <div>
-        <Header />
-        {router.pathname === '/signup' && <SignUpPage />}
-        {router.pathname === '/login' && <LoginPage />}
-        {router.pathname === '/' && <HomePage />}
-        <Footer />
-      </div>
+      <Layout>
+        <HomePage/>
+      </Layout>
     </QueryClientProvider>
   );
 }

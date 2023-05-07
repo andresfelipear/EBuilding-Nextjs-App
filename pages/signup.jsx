@@ -1,7 +1,11 @@
+import Layout from '@/components/Layout'
 import React from 'react'
+import '../styles/global.css';
 
-export default function signup() {
+export default function SignUp() {
   return (
-    <div>Signup</div>
+    <Layout>
+        <div>SignUp</div>
+    </Layout>
   )
 }

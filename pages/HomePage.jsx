@@ -2,9 +2,9 @@ import React from 'react'
 import { useQuery } from 'react-query'
 
 function HomePage() {
-
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL
     const { data, isLoading, isError } = useQuery("components", () =>
-        fetch("http://localhost:4000/api/home-pages?populate[0]=Dynamic.Service.Image")
+        fetch(`${strapiUrl}/api/home-pages?populate[0]=Dynamic.Service.Image`)
             .then((response) => response.json())
             .then((data) => data.data)
     );
@@ -28,7 +28,7 @@ function HomePage() {
                                     {component.Service.map((item) => {
                                         const imageUrl = item.Image.data.attributes.url
                                         return (<div key={item.id} >
-                                            <img src={`http://localhost:4000${imageUrl}`} alt={item.Service} className='images' />
+                                            <img src={`${strapiUrl}${imageUrl}`} alt={item.Service} className='images' />
                                             <h4 className='uppercase text-center font-medium'>{item.Service}</h4>
                                         </div>)
 
