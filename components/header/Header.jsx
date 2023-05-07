@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 function Header() {
   return (
@@ -14,8 +15,8 @@ function Header() {
           <a href="#">home automation</a>
         </div>
         <div className='text-right space-x-4'>
-          <a href="#">Login</a>
-          <a href="#" className='bg-zinc-300 text-gray-900 py-2 px-1.5 rounded-lg font-medium'>Sign Up</a>
+          <Link href="/login">Login</Link>
+          <Link href="/signup" className='bg-zinc-300 text-gray-900 py-2 px-1.5 rounded-lg font-medium'>Sign Up</Link>
         </div>
       </nav>
     </header>
