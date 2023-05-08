@@ -83,7 +83,7 @@ function Login() {
                     <input className="block w-full px-4 py-2 border border-gray-300 rounded-md" type="password" name="confirmPassword" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} />
                     {confirmPassword !== password && (
                         <p className="text-stone-300 text-xs italic">
-                            Confirm Password & Password don't match
+                            Confirm Password and Password do not match
                         </p>
                     )}
                 </div>
