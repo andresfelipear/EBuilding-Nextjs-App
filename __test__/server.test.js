@@ -6,6 +6,7 @@ const cors = require("cors")
 const userRoute = require("../server/routes/user.route.js")
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
+const User = require("../server/models/user.model")
 
 require('../server/strategies/JwtStrategy.js')
 require('../server/strategies/LocalStrategy.js')
@@ -73,13 +74,14 @@ describe('GET /api/', () => {
     });
 });
 
-/*
 describe('POST /api/signup', () => {
     test('should create a new user', async () => {
         const res = await request(app)
             .post('/api/signup')
-            .send({ username: 'newuser', password: 'newpassword', email: 'test@test.com', icon: 'test.png' })
-            .expect(200);
+            .send({ username: 'newuser', password: 'newpassword', email: 'test@test.com' })
+        
+        // Check that the response success
+        expect(res.body.success).toBe(true)    
 
         // Check that the response contains a token
         expect(res.body.token).toBeTruthy();
@@ -88,7 +90,7 @@ describe('POST /api/signup', () => {
         await User.deleteOne({ username: 'newuser' });
     });
 });
-*/
+
 
 
 
