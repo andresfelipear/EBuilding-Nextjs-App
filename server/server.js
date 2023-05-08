@@ -49,7 +49,7 @@ app.prepare()
 
         server.use("/api", userRoute)
         
-        server.get("/api/", (req, res) => {
+        server.get("/api", (req, res) => {
             res.send("this is the test route to make sure server is working")
         })
 
