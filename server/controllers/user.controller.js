@@ -7,6 +7,7 @@ const { COOKIE_OPTIONS, getToken, getRefreshToken } = require('../auth/authentic
 
 exports.postSignUp = async (req, res, next) => {
   try {
+    console.log(req.body)
     User.register(new User({ username: req.body.username }),
       req.body.password,
       (err, user) => {
@@ -18,14 +19,15 @@ exports.postSignUp = async (req, res, next) => {
           const token = getToken({ _id: user._id })
           const refreshToken = getRefreshToken({ _id: user._id })
           user.refreshToken.push({ refreshToken })
-          user.save((err, user) => {
-            if (err) {
-              res.status(500).send(err)
-            } else {
+          user.save()
+            .then((user) => {
               res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-              res.send({ sucess: true, token })
-            }
-          })
+              res.send({ success: true, token })
+            })
+            .catch((err) => {
+              res.status(500).send(err)
+            })
+
         }
       }
     )

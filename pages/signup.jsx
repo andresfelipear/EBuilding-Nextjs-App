@@ -3,6 +3,9 @@ import { useState, useEffect, useContext } from 'react'
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import '../styles/global.css';
+import { UserContext } from "../context/UserContext"
+import { useRouter } from 'next/router'
+import ModalNotification from '@/components/Modal';
 
 function Login() {
 
@@ -12,9 +15,34 @@ function Login() {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [disabled, setDisabled] = useState(true)
 
+    //User Context
+    const [userContext, setUserContext] = useContext(UserContext)
+
+    //Router to navigate between pages
+    const router = useRouter()
+
     const submit = () => {
         if (confirmPassword === password) {
-            const body = { username, email, password, icon };
+            const body = { username, email, password };
+            console.log(process.env.NEXT_PUBLIC_API_URL + "/api/signup");
+            console.log(body);
+            fetch(process.env.NEXT_PUBLIC_API_URL + "/api/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+                credentials: "include"
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error(res.status);
+                    } else {
+                        setUserContext(prev => ({ ...prev, token: res.token }))
+                        router.push('/')
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error Signing Up!", "Username and/or Email already exists")
+                });
 
         } else {
             setConfirmPassword("")
@@ -65,6 +93,11 @@ function Login() {
                     <button className={"px-4 py-2 rounded-md" + (disabled ? " bg-zinc-300 text-gray-900 opacity-50 cursor-not-allowed" : " bg-zinc-300 text-gray-900")} onClick={submit} disabled={disabled}>Sign Up</button>
                 </div>
             </div>
+            <ModalNotification
+                title="My Notification Title"
+                message="This is the message of my notification"
+                onClose={handleNotificationClose}
+            />
         </Layout>
 
 
