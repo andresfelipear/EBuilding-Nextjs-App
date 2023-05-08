@@ -53,7 +53,7 @@ function Header() {
       }
       else {
         const data = await response.json()
-        setUserContext(prev => ({ ...prev, details: undefined, token: null, cartId: null }))
+        setUserContext(prev => ({ ...prev, details: undefined, token: null}))
         router.push('/')
       }
 
