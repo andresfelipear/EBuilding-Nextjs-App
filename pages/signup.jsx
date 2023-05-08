@@ -1,11 +1,9 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
-import Link from 'next/link';
 import Layout from '@/components/Layout';
 import '../styles/global.css';
 import { UserContext } from "../context/UserContext"
 import { useRouter } from 'next/router'
-import ModalNotification from '@/components/Modal';
 
 function Login() {
 
@@ -93,11 +91,6 @@ function Login() {
                     <button className={"px-4 py-2 rounded-md" + (disabled ? " bg-zinc-300 text-gray-900 opacity-50 cursor-not-allowed" : " bg-zinc-300 text-gray-900")} onClick={submit} disabled={disabled}>Sign Up</button>
                 </div>
             </div>
-            <ModalNotification
-                title="My Notification Title"
-                message="This is the message of my notification"
-                onClose={handleNotificationClose}
-            />
         </Layout>
 
 

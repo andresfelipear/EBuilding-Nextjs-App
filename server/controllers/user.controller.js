@@ -35,14 +35,14 @@ exports.postSignUp = async (req, res, next) => {
     res.status(400).json({ error });
   }
 }
-/*
+
 //refreshToken
 exports.postRefreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
   if (refreshToken) {
     try {
-      const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+      const payload = jwt.verify(refreshToken, process.env.NEXT_PUBLIC_REFRESH_TOKEN_SECRET)
       const userId = payload._id
       User.findOne({ _id: userId }).then(user => {
         if (user) {
@@ -54,14 +54,14 @@ exports.postRefreshToken = (req, res, next) => {
             const token = getToken({ _id: userId })
             const newRefreshToken = getRefreshToken({ _id: userId })
             user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
-            user.save((err, user) => {
-              if (err) {
-                res.status(500).send(err)
-              } else {
+            user.save()
+              .then((user) => {
                 res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
                 res.send({ success: true, token })
-              }
-            })
+              })
+              .catch((err) => {
+                res.status(500).send(err)
+              })
           }
         }
       })
@@ -80,15 +80,14 @@ exports.postRefreshToken = (req, res, next) => {
 //getData user logged
 exports.getData = (req, res, next) => {
   try {
-    User.findById(req.user._id).populate('address').exec((err, user) => {
-      if (err) {
+    User.findById(req.user._id)
+      .then((user) => {
+        res.send(user)
+      })
+      .catch((err) => {
         console.log(err)
         res.status(500).send(err)
-      }else{
-        res.send(user)
-      }
-    })
-
+      })
   } catch (error) {
     console.log(err)
     res.status(401).json({ error })
@@ -103,26 +102,22 @@ exports.getLogout = (req, res, next) => {
     const { signedCookies = {} } = req
     const { refreshToken } = signedCookies;
 
-    User.findById(req.user._id)
-      .then((user) => {
-        const tokenIndex = user.refreshToken.findIndex(item => item.refreshToken == refreshToken)
-        if (tokenIndex !== -1) {
-          user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove()
-        }
-        user.save((err, user) => {
-          if (err) {
-            res.status(500).send(err)
-          } else {
-            res.clearCookie('refreshToken', COOKIE_OPTIONS)
-            res.send({ success: true })
-          }
-
-        })
+    User.findOneAndUpdate(
+      { _id: req.user_id },
+      { $pull: { refreshToken: { refreshToken: refreshToken } } }
+    ).then((result) => {
+      console.log("Refresh token removed successfully");
+      res.clearCookie('refreshToken', COOKIE_OPTIONS)
+      res.send({ success: true })
+    })
+      .catch((err) => {
+        console.log(err);
+        res.status(401).json({ err })
       })
   }
   catch (error) {
     console.log(error);
-    res.status(401).json({ error })
+    res.status(500).json({ error })
   }
 
 }
@@ -134,26 +129,27 @@ exports.postLogin = (req, res, next) => {
     const refreshToken = getRefreshToken({ _id: req.user._id })
 
     const { username, password } = req.body
-    User.findOne({ username: username }, (err, user) => {
-      if (user) {
-        user.refreshToken.push({ refreshToken })
-        user.save((err, user) => {
-          if (err) {
-            res.status(500).send(err)
-          } else {
-            res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-            res.send({ success: true, token })
-          }
-        })
-      }
-      else {
-        res.status(400).json({ err });
-      }
-    })
+    User.findOne({ username: username })
+      .then((user) => {
+        if (user) {
+          user.refreshToken.push({ refreshToken });
+          return user.save();
+        } else {
+          throw new Error("User not found");
+        }
+      })
+      .then((user) => {
+        res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
+        res.send({ success: true, token });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send(err);
+      });
   } catch (error) {
     console.log(error)
     res.status(400).json({ error });
   }
 }
-*/
+
 

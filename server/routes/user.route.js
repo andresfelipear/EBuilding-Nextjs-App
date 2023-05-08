@@ -8,7 +8,7 @@ const {verifyUser} = require('../auth/authenticate')
 //Post Sign Up
 router.post('/signup', userController.postSignUp)
 
-/*//refresh Token
+//refresh Token
 router.post('/refreshToken', userController.postRefreshToken)
 
 //verify user logged
@@ -19,7 +19,7 @@ router.get('/logout',verifyUser, userController.getLogout)
 
 //Post Login
 router.post('/login',  passport.authenticate("local"),userController.postLogin)
-*/
+
 
 module.exports = router
     

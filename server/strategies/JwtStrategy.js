@@ -7,13 +7,15 @@ options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 options.secretOrKey = process.env.NEXT_PUBLIC_JWT_SECRET
 
 passport.use(new JwtStrategy(options, function(payload, done){
-    User.findOne({ _id: payload._id }, function(err, user){
-        if(err) return done(err, false)
-
+    User.findOne({ _id: payload._id })
+    .then((user)=>{
         if(user){
             return done(null, user)
         }else{
             return done(null, false)
         }
+    })
+    .catch((err)=>{
+        return done(err,false)
     })
 }))

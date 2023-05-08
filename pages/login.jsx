@@ -1,8 +1,10 @@
 import React from 'react'
-import { useState, useEffect, useContext } from 'react'
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import '../styles/global.css';
+import { UserContext } from '@/context/UserContext';
+import { useState, useEffect, useContext } from 'react'
+import { useRouter } from 'next/router';
 
 function Login() {
 
@@ -10,12 +12,33 @@ function Login() {
   const [password, setPassword] = useState("")
   const [disabled, setDisabled] = useState(true)
 
-  //modal
-  const [notiTitle, setNotiTitle] = useState("")
-  const [notiBody, setNotiBody] = useState("")
+  const [userContext, setUserContext] = useContext(UserContext)
+  const router = useRouter()
 
   const submit = () => {
     const body = { username, password };
+    fetch(process.env.NEXT_PUBLIC_API_URL+"/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      credentials: "include"
+  })
+      .then(async (res) => {
+        
+          if (!res.ok) {
+              throw new Error(res.status);
+          } else {
+              const data = await res.json()
+              setUserContext(prev => ({ ...prev, token: data.token }))
+              router.push('/')
+              return data
+          }
+      })
+      .catch((err) => {
+          console.log("Username or password that you entered is incorrect. Use a valid credential and try again");
+          setUsername("")
+          setPassword("")
+      });
 
   }
 

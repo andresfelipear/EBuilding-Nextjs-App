@@ -15,6 +15,7 @@ require('./auth/authenticate')
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = 3000;
+const session = require('express-session')
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler()
@@ -36,10 +37,18 @@ app.prepare()
         }
 
         server.use(cors(corsOption))
+        server.use(session({
+            secret: process.env.NEXT_PUBLIC_JWT_SECRET,
+            resave: false,
+            saveUninitialized: false,
+        }))
         server.use(passport.initialize())
+        server.use(passport.session());
         server.use(morgan("tiny"))
         server.use(express.json())
 
+        server.use("/api", userRoute)
+        
         server.get("/api/", (req, res) => {
             res.send("this is the test route to make sure server is working")
         })
@@ -47,7 +56,7 @@ app.prepare()
         server.get('*', (req, res) => {
             return handle(req, res)
         })
-        server.use("/api", userRoute)
+        
 
         server.listen(3000, (err) => {
             if (err) throw err

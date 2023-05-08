@@ -27,4 +27,4 @@ exports.getRefreshToken = user =>{
 }
 
 //called for every authenticated request
-exports.verifyUser = passport.authenticate('jwt', { session:false})
+exports.verifyUser = passport.authenticate('jwt')
